@@ -1,0 +1,5 @@
+name: fachinis-auth-plugin
+version: 1.0
+main: com.fachinis.mc.plugins.Main
+api-version: '1.20'
+bootstrapper: com.fachinis.mc.plugins.commands.CommandBootstrap
