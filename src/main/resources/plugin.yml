@@ -1,0 +1,24 @@
+name: fachinis-auth-plugin
+version: 1.0
+main: com.fachinis.mc.plugins.Main
+api-version: '1.20'
+
+commands:
+  register:
+    description: Registers the user
+    usage: /register <email> <password>
+    permission: fachinis.auth.commands.register
+    permission-message: "You do not have permission to use this command"
+  login:
+    description: Authenticates the user
+    usage: /login <password>
+    permission: fachinis.auth.commands.login
+    permission-message: "You do not have permission to use this command"
+
+permissions:
+  fachinis.auth.commands.register:
+    descritpion: "This is the required permission for users to be able to use the /register command"
+    default: notop
+  fachinis.auth.commands.login:
+    descritpion: "This is the required permission for users to be able to use the /login command"
+    default: notop

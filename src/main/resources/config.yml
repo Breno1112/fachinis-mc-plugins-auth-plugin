@@ -1,0 +1,9 @@
+auth:
+  api:
+    url:
+      basepath: "" # Required field. Example: http://localhost:3000
+      register:
+        path: ""
+    credentials:
+      client_id: "" # Required field
+      client_secret: "" # Required field
