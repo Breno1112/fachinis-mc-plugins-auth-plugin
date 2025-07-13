@@ -1,9 +1,41 @@
-auth:
+backend:
   api:
     url:
       basepath: "" # Required field. Example: http://localhost:3000
       register:
-        path: ""
-    credentials:
-      client_id: "" # Required field
-      client_secret: "" # Required field
+        path: "" # Required field. Example: /register
+      login:
+        path: "" # Required field. Example: /login
+      save-login-history:
+        path: "" # Required field. Example: /login-history
+    sts:
+      authentication-type: "" # Required field. Example: 'CLIENT_CREDENTIALS'. Valid values are: 'API_KEY', 'CLIENT_CREDENTIALS', 'NONE'
+      client-credentials:
+        client_id: "" # Required field
+        client_secret: "" # Required field
+      api_key:
+        value: "" # Required field
+  remote-database:
+    database-type: "" # Required field. Valid values are: 'MYSQL', 'MONGO_DB', 'SQL_SERVER', 'POSTGRE_SQL'
+    connection:
+      url: "" # Required field
+      port: "" # Required field
+      ssl-enabled: "" # Required field
+      username: "" # Required field
+      password: "" # Required field
+      database: "" # Required field
+    
+    tables:
+      users-table: "" # Required field
+      login-history-table: "" # Required field
+  
+  in-memory-database:
+    tables:
+      users-table: "" # Required field
+      login-history-table: "" # Required field
+  
+  file:
+    file-name: "" # Required field
+
+  
+  backend-system: "" # Required field. Valid values are: 'API', 'REMOTE_DATABASE', 'IN_MEMORY_DATABASE' and 'FILE'.

@@ -38,6 +38,6 @@ class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        getComponentLogger().info(Component.text("MyFirstPlugin has been disabled.", NamedTextColor.GRAY));
+        getComponentLogger().info(Component.text("Fachini's Auth Plugin has been disabled.", NamedTextColor.GRAY));
     }
 }
