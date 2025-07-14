@@ -5,5 +5,5 @@ import okhttp3.Request;
 public interface StsClient {
     
 
-    public void injectToken(Request request);
+    public Request.Builder injectToken(Request.Builder requestBuilder);
 }
