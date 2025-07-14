@@ -6,6 +6,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.fachinis.mc.plugins.clients.AuthClient;
 import com.fachinis.mc.plugins.domain.entities.AuthenticatedUser;
 import com.fachinis.mc.plugins.domain.events.PlayerRegistrationEvent;
+import com.fachinis.mc.plugins.drivers.backend.BackendDriver;
+import com.fachinis.mc.plugins.drivers.backend.factories.backenddriver.BackendDriverFactory;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -18,14 +20,12 @@ public class AuthService extends ServiceInterface {
         this.plugin = plugin;
     }
 
-    private AuthClient authClient;
+    private BackendDriver backendDriver = BackendDriverFactory.getInstance().getBackendDriver();
 
     public void doRegistration(Player player, String email, String password) {
 
         Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
-            reloadAuthClient();
-            authClient
-                .doRegistration(password, password, email)
+            backendDriver.doRegistration(password, password, email)
                 .thenAccept(data -> { 
                     Bukkit
                         .getScheduler()
@@ -43,13 +43,6 @@ public class AuthService extends ServiceInterface {
                     return null;
                 });
         });
-    }
-
-
-    private void reloadAuthClient() {
-        if (this.authClient == null) {
-            this.authClient = InjectorService.getInstance().inject(AuthClient.class);
-        }
     }
 
     private Runnable buildSuccessRegistrationResponseTask(AuthenticatedUser data, Player player) {
