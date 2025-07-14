@@ -1,6 +1,10 @@
-package com.fachinis.mc.plugins.commands;
+package com.fachinis.mc.plugins.bootstrap;
 
 import java.util.List;
+
+import com.fachinis.mc.plugins.commands.PluginCommandInterface;
+import com.fachinis.mc.plugins.commands.RegisterCommand;
+
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
@@ -8,9 +12,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 
-public class CommandBootstrap implements PluginBootstrap {
+public class AuthPluginBootstrap implements PluginBootstrap {
 
-    public CommandBootstrap() {
+    public AuthPluginBootstrap() {
         commands = List.of(
             new RegisterCommand()
         );

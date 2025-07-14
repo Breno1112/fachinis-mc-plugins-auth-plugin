@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.fachinis.mc.plugins.clients.AuthClient;
+import com.fachinis.mc.plugins.domain.entities.AuthenticatedUser;
 import com.fachinis.mc.plugins.domain.events.PlayerRegistrationEvent;
 
 import net.kyori.adventure.text.Component;
@@ -28,21 +29,17 @@ public class AuthService extends ServiceInterface {
                 .thenAccept(data -> { 
                     Bukkit
                         .getScheduler()
-                        .runTask(this.plugin, () -> {
-                            final PlayerRegistrationEvent event = new PlayerRegistrationEvent();
-                            event.setMessage(Component.text("Logged in successfully!", NamedTextColor.GREEN));
-                            event.setSuccessfullOperation(true);
-                            event.setPlayer(player);
-                            event.callEvent();
-                        });
+                        .runTask(
+                            this.plugin, 
+                            this.buildSuccessRegistrationResponseTask(data, player)
+                        );
                 }).exceptionally(exception -> {
-                    Bukkit.getScheduler().runTask(this.plugin, () -> {
-                        final PlayerRegistrationEvent event = new PlayerRegistrationEvent();
-                        event.setMessage(Component.text("Unable to register new account. Please try again!", NamedTextColor.RED));
-                        event.setSuccessfullOperation(false);
-                        event.setPlayer(player);
-                        event.callEvent();
-                    });
+                    Bukkit
+                        .getScheduler()
+                        .runTask(
+                            this.plugin, 
+                            this.buildFailedRegistrationResponseTask(exception, player)
+                        );
                     return null;
                 });
         });
@@ -53,5 +50,31 @@ public class AuthService extends ServiceInterface {
         if (this.authClient == null) {
             this.authClient = InjectorService.getInstance().inject(AuthClient.class);
         }
+    }
+
+    private Runnable buildSuccessRegistrationResponseTask(AuthenticatedUser data, Player player) {
+        return new Runnable() {
+            @Override
+            public void run() {
+                final PlayerRegistrationEvent event = new PlayerRegistrationEvent();
+                event.setMessage(Component.text("Logged in successfully!", NamedTextColor.GREEN));
+                event.setSuccessfullOperation(true);
+                event.setPlayer(player);
+                event.callEvent();
+            }
+        };
+    }
+
+    private Runnable buildFailedRegistrationResponseTask(Throwable ex, Player player) {
+        return new Runnable() {
+            @Override
+            public void run() {
+                final PlayerRegistrationEvent event = new PlayerRegistrationEvent();
+                event.setMessage(Component.text("Unable to register new account. Please try again!", NamedTextColor.RED));
+                event.setSuccessfullOperation(false);
+                event.setPlayer(player);
+                event.callEvent();
+            }
+        };
     }
 }
