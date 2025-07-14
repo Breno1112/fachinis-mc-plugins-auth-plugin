@@ -236,4 +236,8 @@ public class PluginConfigurationSingleton {
     private void setMissingConfurationProperty(String key) {
         this.missingConfigurationProperty = key;
     }
+
+    public ApiStsAuthenticationType getApiStsConfigurationType() {
+        return ApiStsAuthenticationType.parse(this.loadedConfiguration.getString(PluginConfigurationKeys.BACKEND_API_STS_AUTHENTICATION_TYPE));
+    }
 }

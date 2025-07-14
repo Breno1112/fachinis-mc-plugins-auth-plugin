@@ -2,10 +2,17 @@ package com.fachinis.mc.plugins.drivers.backend.factories.backenddriver.concrete
 
 import java.util.concurrent.CompletableFuture;
 
+import com.fachinis.mc.plugins.clients.factories.stsclient.StsClient;
 import com.fachinis.mc.plugins.domain.entities.AuthenticatedUser;
 import com.fachinis.mc.plugins.drivers.backend.BackendDriver;
 
 public class ApiBackendDriver implements BackendDriver {
+
+    private final StsClient stsClient;
+
+    public ApiBackendDriver(StsClient client) {
+        this.stsClient = client;
+    }
 
     @Override
     public CompletableFuture<AuthenticatedUser> doRegistration(String username, String password, String email) {
