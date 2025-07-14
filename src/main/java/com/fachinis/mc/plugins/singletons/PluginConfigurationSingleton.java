@@ -2,7 +2,6 @@ package com.fachinis.mc.plugins.singletons;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -17,6 +16,7 @@ public class PluginConfigurationSingleton {
     private JavaPlugin pluginInstance;
     private boolean loaded = false;
     private FileConfiguration loadedConfiguration;
+    private String missingConfigurationProperty;
     
     private PluginConfigurationSingleton() {}
 
@@ -44,27 +44,11 @@ public class PluginConfigurationSingleton {
         FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
 
         this.loaded = this.checkLoadedConfiguration(config);
-
-        final String authAPIURL = config.getString("auth.api.url.basepath");
-        final String authAPIClientId = config.getString("auth.api.credentials.client_id");
-        final String authAPIClientSecret = config.getString("auth.api.credentials.client_secret");
-        if (
-            authAPIURL != null && !authAPIURL.isEmpty() &&
-            authAPIClientId != null && !authAPIClientId.isEmpty() &&
-            authAPIClientSecret != null && !authAPIClientSecret.isEmpty()
-        ) {
-            this.loaded = true;
-            this.loadedConfiguration = config;
-        }
     }
 
     private boolean checkLoadedConfiguration(FileConfiguration config) {
         boolean valid = false;
         BackendConfigurationSystem backendSystem = BackendConfigurationSystem.parse(config.getString(PluginConfigurationKeys.BACKEND_SYSTEM_CONFIGURATION_STRING)); 
-        if (backendSystem == BackendConfigurationSystem.UNKNOWN) {
-            config.set(PluginConfigurationKeys.BACKEND_SYSTEM_CONFIGURATION_STRING, BackendConfigurationSystem.FILE);
-            backendSystem = BackendConfigurationSystem.FILE;
-        }
         switch (backendSystem) {
             case API:
                 valid = checkAPIConfiguration(config);
@@ -78,6 +62,10 @@ public class PluginConfigurationSingleton {
             case FILE:
                 valid = checkFileConfiguration(config);
                 break;
+            case UNKNOWN:
+                config.set(PluginConfigurationKeys.BACKEND_SYSTEM_CONFIGURATION_STRING, BackendConfigurationSystem.FILE);
+                backendSystem = BackendConfigurationSystem.FILE;
+                valid = checkFileConfiguration(config);
             default:
                 break;
         }
@@ -89,6 +77,7 @@ public class PluginConfigurationSingleton {
         final String basePath = config.getString(PluginConfigurationKeys.BACKEND_API_URL_BASE_PATH);
 
         if (basePath == null || basePath.isEmpty() || basePath.isBlank()) {
+            this.setMissingConfurationProperty(PluginConfigurationKeys.BACKEND_API_URL_BASE_PATH);
             return false;
         }
 
@@ -106,6 +95,7 @@ public class PluginConfigurationSingleton {
                 }
                 break;
             case UNKNOWN:
+                config.set(PluginConfigurationKeys.BACKEND_API_STS_AUTHENTICATION_TYPE, ApiStsAuthenticationType.NONE.getPropertyValue());
                 return false;
             default:
                 break;
@@ -121,11 +111,13 @@ public class PluginConfigurationSingleton {
     private boolean validApiClientCredentialsConfiguration(FileConfiguration config) {
         final String clientId = config.getString(PluginConfigurationKeys.BACKEND_API_STS_CLIENT_CREDENTIALS_CLIENT_ID);
         if (clientId == null || clientId.isEmpty() || clientId.isBlank()) {
+            this.setMissingConfurationProperty(PluginConfigurationKeys.BACKEND_API_STS_CLIENT_CREDENTIALS_CLIENT_ID);
             return false;
         }
 
         final String clientSecret = config.getString(PluginConfigurationKeys.BACKEND_API_STS_CLIENT_CREDENTIALS_CLIENT_SECRET);
         if (clientSecret == null || clientSecret.isEmpty() || clientSecret.isBlank()) {
+            this.setMissingConfurationProperty(PluginConfigurationKeys.BACKEND_API_STS_CLIENT_CREDENTIALS_CLIENT_SECRET);
             return false;
         }
         return true;
@@ -134,6 +126,7 @@ public class PluginConfigurationSingleton {
     private boolean validApiKeyConfiguration(FileConfiguration config) {
         final String apiKey = config.getString(PluginConfigurationKeys.BACKEND_API_STS_API_KEY);
         if (apiKey == null || apiKey.isEmpty() || apiKey.isBlank()) {
+            this.setMissingConfurationProperty(PluginConfigurationKeys.BACKEND_API_STS_API_KEY);
             return false;
         }
         return true;
@@ -143,12 +136,14 @@ public class PluginConfigurationSingleton {
         final ArrayList<String> validPaths = new ArrayList<>();
         final String registerPath = config.getString(PluginConfigurationKeys.BACKEND_API_URL_REGISTER_PATH);
         if (registerPath == null || registerPath.isEmpty() || registerPath.isBlank()) {
+            this.setMissingConfurationProperty(PluginConfigurationKeys.BACKEND_API_URL_REGISTER_PATH);
             return false;
         }
         validPaths.add(registerPath);
 
         final String loginPath = config.getString(PluginConfigurationKeys.BACKEND_API_URL_LOGIN_PATH);
         if (loginPath == null || loginPath.isEmpty() || loginPath.isBlank() || validPaths.contains(loginPath)) {
+            this.setMissingConfurationProperty(PluginConfigurationKeys.BACKEND_API_URL_LOGIN_PATH);
             return false;
         }
         validPaths.add(loginPath);
@@ -157,6 +152,7 @@ public class PluginConfigurationSingleton {
         if (loginHistoryFeatureEnabled) {
             final String loginHistoryPath = config.getString(PluginConfigurationKeys.BACKEND_API_URL_SAVE_LOGIN_HISTORY_PATH);
             if (loginHistoryPath == null || loginHistoryPath.isEmpty() || loginHistoryPath.isBlank() || validPaths.contains(loginHistoryPath)) {
+                this.setMissingConfurationProperty(PluginConfigurationKeys.BACKEND_API_URL_SAVE_LOGIN_HISTORY_PATH);
                 return false;
             }
             validPaths.add(loginHistoryPath);
@@ -165,21 +161,60 @@ public class PluginConfigurationSingleton {
     }
 
     private boolean checkRemoteDatabaseConfiguration(FileConfiguration config) {
-        boolean valid = false;
+        final String url = config.getString(PluginConfigurationKeys.BACKEND_REMOTE_DATABASE_CONNECTION_URL);
+        if (url == null || url.isEmpty() || url.isBlank()) {
+            this.setMissingConfurationProperty(PluginConfigurationKeys.BACKEND_REMOTE_DATABASE_CONNECTION_URL);
+            return false;
+        }
 
-        return valid;
+        final String database = config.getString(PluginConfigurationKeys.BACKEND_REMOTE_DATABASE_CONNECTION_DATABASE);
+        if (database == null || database.isEmpty() || database.isBlank()) {
+            this.setMissingConfurationProperty(PluginConfigurationKeys.BACKEND_REMOTE_DATABASE_CONNECTION_DATABASE);
+            return false;
+        }
+
+        final String usersTable = config.getString(PluginConfigurationKeys.BACKEND_REMOTE_DATABASE_TABLES_USERS_TABLE);
+        if (usersTable == null || usersTable.isEmpty() || usersTable.isBlank()) {
+            this.setMissingConfurationProperty(PluginConfigurationKeys.BACKEND_REMOTE_DATABASE_TABLES_USERS_TABLE);
+            return false;
+        }
+
+        final boolean loginHistoryFeatureEnabled = config.getBoolean(PluginConfigurationKeys.FEATURES_LOGIN_HISTORY);
+        if (loginHistoryFeatureEnabled) {
+            final String logisHistoryTable = config.getString(PluginConfigurationKeys.BACKEND_REMOTE_DATABASE_TABLES_LOGIN_HISTORY_TABLE);
+            if (logisHistoryTable == null || logisHistoryTable.isEmpty() || logisHistoryTable.isBlank()) {
+                this.setMissingConfurationProperty(PluginConfigurationKeys.BACKEND_REMOTE_DATABASE_TABLES_LOGIN_HISTORY_TABLE);
+                return false;
+            }   
+        }
+        return true;
     }
 
     private boolean checkInMemoryDatabaseConfiguration(FileConfiguration config) {
-        boolean valid = false;
+        final String usersTable = config.getString(PluginConfigurationKeys.BACKEND_IN_MEMORY_DATABASE_TABLES_USERS_TABLE);
+        if (usersTable == null || usersTable.isEmpty() || usersTable.isBlank()) {
+            this.setMissingConfurationProperty(PluginConfigurationKeys.BACKEND_IN_MEMORY_DATABASE_TABLES_USERS_TABLE);
+            return false;
+        }
 
-        return valid;
+        final boolean loginHistoryFeatureEnabled = config.getBoolean(PluginConfigurationKeys.FEATURES_LOGIN_HISTORY);
+        if (loginHistoryFeatureEnabled) {
+            final String logisHistoryTable = config.getString(PluginConfigurationKeys.BACKEND_IN_MEMORY_DATABASE_TABLES_LOGIN_HISTORY_TABLE);
+            if (logisHistoryTable == null || logisHistoryTable.isEmpty() || logisHistoryTable.isBlank()) {
+                this.setMissingConfurationProperty(PluginConfigurationKeys.BACKEND_IN_MEMORY_DATABASE_TABLES_LOGIN_HISTORY_TABLE);
+                return false;
+            }  
+        }
+        return true;
     }
 
     private boolean checkFileConfiguration(FileConfiguration config) {
-        boolean valid = false;
-
-        return valid;
+        final String fileName = config.getString(PluginConfigurationKeys.BACKEND_FILE_FILE_NAME);
+        if (fileName == null || fileName.isEmpty() || fileName.isBlank()) {
+            this.setMissingConfurationProperty(PluginConfigurationKeys.BACKEND_FILE_FILE_NAME);
+            return false;
+        }
+        return true;
     }
 
     public boolean isLoaded() {
@@ -188,5 +223,17 @@ public class PluginConfigurationSingleton {
 
     public String getPropertyString(String key) {
         return this.loadedConfiguration.getString(key);
+    }
+
+    public BackendConfigurationSystem getBackendConfigurationSystem() {
+        return BackendConfigurationSystem.parse(this.loadedConfiguration.getString(PluginConfigurationKeys.BACKEND_SYSTEM_CONFIGURATION_STRING));
+    }
+
+    public String getMissingConfigurationProperty() {
+        return this.missingConfigurationProperty;
+    }
+
+    private void setMissingConfurationProperty(String key) {
+        this.missingConfigurationProperty = key;
     }
 }

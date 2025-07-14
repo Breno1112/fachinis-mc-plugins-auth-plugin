@@ -9,7 +9,7 @@ backend:
       save-login-history:
         path: "" # Required field. Must be different from other paths. Example: /login-history
     sts:
-      authentication-type: "" # Required field. Example: 'CLIENT_CREDENTIALS'. Valid values are: 'API_KEY', 'CLIENT_CREDENTIALS', 'NONE'
+      authentication-type: "" # Required field. Example: 'CLIENT_CREDENTIALS'. Valid values are: 'API_KEY', 'CLIENT_CREDENTIALS', 'NONE'. Defaults to NONE
       client-credentials:
         client_id: "" # Required field
         client_secret: "" # Required field
@@ -19,10 +19,10 @@ backend:
     database-type: "" # Required field. Valid values are: 'MYSQL', 'MONGO_DB', 'SQL_SERVER', 'POSTGRE_SQL'
     connection:
       url: "" # Required field
-      port: "" # Required field
-      ssl-enabled: "" # Required field
-      username: "" # Required field
-      password: "" # Required field
+      port: 0 # Required field. Defaults to 0
+      ssl-enabled: "" # Required field. Defaults to false
+      username: "" # Optional field
+      password: "" # Optional field
       database: "" # Required field
     
     tables:
@@ -38,7 +38,7 @@ backend:
     file-name: "" # Required field
 
   
-  backend-system: "" # Required field. Valid values are: 'API', 'REMOTE_DATABASE', 'IN_MEMORY_DATABASE' and 'FILE'.
+  backend-system: "" # Required field. Valid values are: 'API', 'REMOTE_DATABASE', 'IN_MEMORY_DATABASE' and 'FILE'. Defaults to FILE
 
 features:
   login-history: false # Required field. Indicates wether to save user login history

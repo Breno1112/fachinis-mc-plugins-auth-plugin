@@ -21,4 +21,8 @@ public enum ApiStsAuthenticationType {
         }
         return parsed;
     }
+
+    public String getPropertyValue() {
+        return this.propertyValue;
+    }
 }

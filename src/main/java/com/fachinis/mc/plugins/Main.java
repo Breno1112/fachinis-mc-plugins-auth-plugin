@@ -28,7 +28,7 @@ class Main extends JavaPlugin {
     public void onEnable() {
         PluginConfigurationSingleton.getInstance().init(this);
         if (!PluginConfigurationSingleton.getInstance().isLoaded()) {
-            getComponentLogger().warn(Component.text("Fachini's Auth Plugin could not be enabled due to missing configurations! If it is the first time you are loading this plugin, please refer to the setup documentation here: https://plugins.mc.fachinis.com/auth-plugin/docs/setup", NamedTextColor.YELLOW));
+            getComponentLogger().warn(Component.text(String.format("Fachini's Auth Plugin could not be enabled due to missing configurations! If it is the first time you are loading this plugin, please refer to the setup documentation here: https://plugins.mc.fachinis.com/auth-plugin/docs/setup\nThe property %s was not configured properly!", PluginConfigurationSingleton.getInstance().getMissingConfigurationProperty()), NamedTextColor.YELLOW));
             return;
         }
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
