@@ -1,12 +1,15 @@
 package com.fachinis.mc.plugins.singletons;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.fachinis.mc.plugins.domain.constants.PluginConfigurationKeys;
+import com.fachinis.mc.plugins.domain.enums.ApiStsAuthenticationType;
 import com.fachinis.mc.plugins.domain.enums.BackendConfigurationSystem;
 
 public class PluginConfigurationSingleton {
@@ -83,11 +86,82 @@ public class PluginConfigurationSingleton {
 
 
     private boolean checkAPIConfiguration(FileConfiguration config) {
-        boolean valid = false;
+        final String basePath = config.getString(PluginConfigurationKeys.BACKEND_API_URL_BASE_PATH);
 
-        
+        if (basePath == null || basePath.isEmpty() || basePath.isBlank()) {
+            return false;
+        }
 
-        return valid;
+        final ApiStsAuthenticationType authenticationType = ApiStsAuthenticationType.parse(config.getString(PluginConfigurationKeys.BACKEND_API_STS_AUTHENTICATION_TYPE));
+
+        switch (authenticationType) {
+            case CLIENT_CREDENTIALS:
+                if(!validApiClientCredentialsConfiguration(config)) {
+                    return false;
+                }
+                break;
+            case API_KEY:
+                if (!validApiKeyConfiguration(config)) {
+                    return false;
+                }
+                break;
+            case UNKNOWN:
+                return false;
+            default:
+                break;
+        }
+
+        if (!validApiPathsConfiguration(config)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean validApiClientCredentialsConfiguration(FileConfiguration config) {
+        final String clientId = config.getString(PluginConfigurationKeys.BACKEND_API_STS_CLIENT_CREDENTIALS_CLIENT_ID);
+        if (clientId == null || clientId.isEmpty() || clientId.isBlank()) {
+            return false;
+        }
+
+        final String clientSecret = config.getString(PluginConfigurationKeys.BACKEND_API_STS_CLIENT_CREDENTIALS_CLIENT_SECRET);
+        if (clientSecret == null || clientSecret.isEmpty() || clientSecret.isBlank()) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validApiKeyConfiguration(FileConfiguration config) {
+        final String apiKey = config.getString(PluginConfigurationKeys.BACKEND_API_STS_API_KEY);
+        if (apiKey == null || apiKey.isEmpty() || apiKey.isBlank()) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validApiPathsConfiguration(FileConfiguration config) {
+        final ArrayList<String> validPaths = new ArrayList<>();
+        final String registerPath = config.getString(PluginConfigurationKeys.BACKEND_API_URL_REGISTER_PATH);
+        if (registerPath == null || registerPath.isEmpty() || registerPath.isBlank()) {
+            return false;
+        }
+        validPaths.add(registerPath);
+
+        final String loginPath = config.getString(PluginConfigurationKeys.BACKEND_API_URL_LOGIN_PATH);
+        if (loginPath == null || loginPath.isEmpty() || loginPath.isBlank() || validPaths.contains(loginPath)) {
+            return false;
+        }
+        validPaths.add(loginPath);
+
+        final boolean loginHistoryFeatureEnabled = config.getBoolean(PluginConfigurationKeys.FEATURES_LOGIN_HISTORY);
+        if (loginHistoryFeatureEnabled) {
+            final String loginHistoryPath = config.getString(PluginConfigurationKeys.BACKEND_API_URL_SAVE_LOGIN_HISTORY_PATH);
+            if (loginHistoryPath == null || loginHistoryPath.isEmpty() || loginHistoryPath.isBlank() || validPaths.contains(loginHistoryPath)) {
+                return false;
+            }
+            validPaths.add(loginHistoryPath);
+        }
+        return true;
     }
 
     private boolean checkRemoteDatabaseConfiguration(FileConfiguration config) {

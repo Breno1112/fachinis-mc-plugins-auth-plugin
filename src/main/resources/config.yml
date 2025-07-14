@@ -3,11 +3,11 @@ backend:
     url:
       basepath: "" # Required field. Example: http://localhost:3000
       register:
-        path: "" # Required field. Example: /register
+        path: "" # Required field. Must be different from other paths. Example: /register
       login:
-        path: "" # Required field. Example: /login
+        path: "" # Required field. Must be different from other paths. Example: /login
       save-login-history:
-        path: "" # Required field. Example: /login-history
+        path: "" # Required field. Must be different from other paths. Example: /login-history
     sts:
       authentication-type: "" # Required field. Example: 'CLIENT_CREDENTIALS'. Valid values are: 'API_KEY', 'CLIENT_CREDENTIALS', 'NONE'
       client-credentials:
@@ -39,3 +39,6 @@ backend:
 
   
   backend-system: "" # Required field. Valid values are: 'API', 'REMOTE_DATABASE', 'IN_MEMORY_DATABASE' and 'FILE'.
+
+features:
+  login-history: false # Required field. Indicates wether to save user login history
