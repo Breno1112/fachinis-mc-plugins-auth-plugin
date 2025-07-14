@@ -3,7 +3,6 @@ package com.fachinis.mc.plugins.services;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import com.fachinis.mc.plugins.clients.AuthClient;
 import com.fachinis.mc.plugins.domain.entities.AuthenticatedUser;
 import com.fachinis.mc.plugins.domain.events.PlayerRegistrationEvent;
 import com.fachinis.mc.plugins.drivers.backend.BackendDriver;
