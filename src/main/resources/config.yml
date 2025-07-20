@@ -1,7 +1,7 @@
 backend:
   api:
     url:
-      basepath: "" # Required field. Example: http://localhost:3000
+      base-path: "" # Required field. Example: http://localhost:3000
       register:
         path: "" # Required field. Must be different from other paths. Example: /register
       login:
@@ -13,6 +13,8 @@ backend:
       client-credentials:
         client_id: "" # Required field
         client_secret: "" # Required field
+        base-path: "" # Required field. This is the basepath of the STS API to generate tokens. Example: https://my.domain.com TODO(Validate required field)
+        token-path: "" # Required field. This is the path of the endpoint of the API to generate tokens. Example: /api/token TODO(validate required field)
       api_key:
         value: "" # Required field
   remote-database:

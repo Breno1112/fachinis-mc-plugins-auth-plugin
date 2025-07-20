@@ -3,13 +3,17 @@ package com.fachinis.mc.plugins.domain.constants;
 public class PluginConfigurationKeys {
     public static final String BACKEND_SYSTEM_CONFIGURATION_STRING = "backend.backend-system";
 
-    public static final String BACKEND_API_URL_BASE_PATH = "backend.api.url.basepath";
+    public static final String BACKEND_API_URL_BASE_PATH = "backend.api.url.base-path";
     public static final String BACKEND_API_URL_REGISTER_PATH = "backend.api.url.register.path";
     public static final String BACKEND_API_URL_LOGIN_PATH = "backend.api.url.login.path";
     public static final String BACKEND_API_URL_SAVE_LOGIN_HISTORY_PATH = "backend.api.url.save-login-history.path";
     public static final String BACKEND_API_STS_AUTHENTICATION_TYPE = "backend.api.sts.authentication-type";
+
     public static final String BACKEND_API_STS_CLIENT_CREDENTIALS_CLIENT_ID = "backend.api.sts.client-credentials.client_id";
     public static final String BACKEND_API_STS_CLIENT_CREDENTIALS_CLIENT_SECRET = "backend.api.sts.client-credentials.client_secret";
+    public static final String BACKEND_API_STS_CLIENT_CREDENTIALS_BASE_PATH = "backend.api.sts.client-credentials.base-path";
+    public static final String BACKEND_API_STS_CLIENT_CREDENTIALS_TOKEN_PATH = "backend.api.sts.client-credentials.token-path";
+
     public static final String BACKEND_API_STS_API_KEY = "backend.api.sts.api_key";
 
     public static final String BACKEND_REMOTE_DATABASE_DATABASE_TYPE = "backend.remote-database.database-type";
