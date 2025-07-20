@@ -44,6 +44,10 @@ public class PluginConfigurationSingleton {
         FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
 
         this.loaded = this.checkLoadedConfiguration(config);
+
+        if (this.isLoaded()) {
+            this.loadedConfiguration = config;
+        }
     }
 
     private boolean checkLoadedConfiguration(FileConfiguration config) {

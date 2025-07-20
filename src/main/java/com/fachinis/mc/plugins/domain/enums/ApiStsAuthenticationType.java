@@ -5,11 +5,12 @@ public enum ApiStsAuthenticationType {
     API_KEY("API_KEY"),
     NONE("NONE"),
     UNKNOWN("UNKNOWN");
-    ;
     
     private String propertyValue;
 
-    ApiStsAuthenticationType(String propertyValue) {}
+    ApiStsAuthenticationType(String value) {
+        this.propertyValue = value;
+    }
 
     public static ApiStsAuthenticationType parse(String value) {
         ApiStsAuthenticationType parsed = UNKNOWN;
