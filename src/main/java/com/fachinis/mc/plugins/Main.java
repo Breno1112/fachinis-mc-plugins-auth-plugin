@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.fachinis.mc.plugins.clients.AuthRestApiClient;
 import com.fachinis.mc.plugins.listeners.PlayerJoinListener;
 import com.fachinis.mc.plugins.listeners.PlayerRegistrationEventListener;
 import com.fachinis.mc.plugins.services.AuthService;
@@ -19,7 +18,6 @@ class Main extends JavaPlugin {
     @Override
     public void onLoad() {
         InjectorService.getInstance().registerMultipleComponents(List.of(
-            new AuthRestApiClient(),
             new AuthService(this)
         ));
     }
