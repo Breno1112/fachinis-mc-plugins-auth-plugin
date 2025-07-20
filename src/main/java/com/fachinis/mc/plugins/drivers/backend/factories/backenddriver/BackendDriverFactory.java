@@ -23,12 +23,10 @@ public class BackendDriverFactory {
 
     private BackendDriver backendDriver;
 
-    public void initialize() {
+    private void updateDriver() {
         final BackendConfigurationSystem backendConfigurationSystem = PluginConfigurationSingleton.getInstance().getBackendConfigurationSystem();
-
         switch (backendConfigurationSystem) {
             case API:
-                StsClientFactory.getInstance().inicialize();
                 this.backendDriver = new ApiBackendDriver(StsClientFactory.getInstance().getClient());
                 break;
             case REMOTE_DATABASE:
@@ -40,11 +38,12 @@ public class BackendDriverFactory {
             case FILE:
                 this.backendDriver = new FileBackendDriver();
             default:
-                throw new RuntimeException("No backend driver was properly configured. There seems to be a problem with your configuration!");
+                this.backendDriver = null;
         }
     }
 
     public BackendDriver getBackendDriver() {
+        this.updateDriver();
         return this.backendDriver;
     }
 }

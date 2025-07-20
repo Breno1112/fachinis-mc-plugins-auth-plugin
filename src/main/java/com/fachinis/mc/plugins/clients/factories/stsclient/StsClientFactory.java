@@ -19,7 +19,12 @@ public class StsClientFactory {
         return StsClientFactoryInstanceHolder.INSTANCE;
     }
 
-    public void inicialize() {
+    public StsClient getClient() {
+        this.updateClient();
+        return this.client;
+    }
+
+    private void updateClient() {
         switch (PluginConfigurationSingleton.getInstance().getApiStsConfigurationType()) {
             case CLIENT_CREDENTIALS:
                 this.client = new ClientCredentialsStsClient();
@@ -31,9 +36,5 @@ public class StsClientFactory {
             default:
                 break;
         }
-    }
-
-    public StsClient getClient() {
-        return this.client;
     }
 }
