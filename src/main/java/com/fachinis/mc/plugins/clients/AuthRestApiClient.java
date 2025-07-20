@@ -18,7 +18,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 
-public class AuthClient extends Component {
+public class AuthRestApiClient extends Component {
 
     private final OkHttpClient client = new OkHttpClient();
     private final Gson gson = new Gson();

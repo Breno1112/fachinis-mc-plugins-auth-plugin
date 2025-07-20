@@ -16,7 +16,6 @@ public class ApiBackendDriver implements BackendDriver {
 
     @Override
     public CompletableFuture<AuthenticatedUser> doRegistration(String username, String password, String email) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'doRegistration'");
     }
     
