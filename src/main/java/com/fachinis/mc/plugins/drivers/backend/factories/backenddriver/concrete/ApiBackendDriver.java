@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
 import com.fachinis.mc.plugins.clients.factories.stsclient.StsClient;
+import com.fachinis.mc.plugins.domain.constants.PluginConfigurationKeys;
 import com.fachinis.mc.plugins.domain.dtos.auth.request.LoginRequestDTO;
 import com.fachinis.mc.plugins.domain.entities.AuthenticatedUser;
 import com.fachinis.mc.plugins.drivers.backend.BackendDriver;
@@ -65,8 +66,8 @@ public class ApiBackendDriver implements BackendDriver {
         Request.Builder requestBuilder = new Request.Builder()
             .url(String.format(
                 "%s%s", 
-                PluginConfigurationSingleton.getInstance().getPropertyString("auth.api.url.basepath"),
-                PluginConfigurationSingleton.getInstance().getPropertyString("auth.api.url.register.path")
+                PluginConfigurationSingleton.getInstance().getPropertyString(PluginConfigurationKeys.BACKEND_API_URL_BASE_PATH),
+                PluginConfigurationSingleton.getInstance().getPropertyString(PluginConfigurationKeys.BACKEND_API_URL_REGISTER_PATH)
                 ))
             .post(body);
         requestBuilder = stsClient.injectToken(requestBuilder);
