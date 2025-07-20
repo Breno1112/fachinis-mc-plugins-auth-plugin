@@ -56,8 +56,6 @@ public class PlayerJoinListener implements Listener {
                 }
                 if (shouldKickPlayer) {
                     player.kick(Component.text("You have been kicked out because you took too long to login", NamedTextColor.RED));                
-                } else {
-                    player.sendMessage("Cancelling task because player logged in");
                 }
             }
         };
