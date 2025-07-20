@@ -15,7 +15,17 @@ public class AuthService extends ServiceInterface {
 
     private JavaPlugin plugin;
 
-    public AuthService(JavaPlugin plugin) {
+    private AuthService() {}
+
+    private static class AuthServiceInstanceHolder {
+        private static final AuthService INSTANCE = new AuthService();
+    }
+
+    public static AuthService getInstance() {
+        return AuthServiceInstanceHolder.INSTANCE;
+    }
+    
+    public void initialize(JavaPlugin plugin) {
         this.plugin = plugin;
     }
 

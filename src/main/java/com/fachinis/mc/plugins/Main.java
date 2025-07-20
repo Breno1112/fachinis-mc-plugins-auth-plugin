@@ -1,13 +1,10 @@
 package com.fachinis.mc.plugins;
 
-import java.util.List;
-
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.fachinis.mc.plugins.listeners.PlayerJoinListener;
 import com.fachinis.mc.plugins.listeners.PlayerRegistrationEventListener;
 import com.fachinis.mc.plugins.services.AuthService;
-import com.fachinis.mc.plugins.services.InjectorService;
 import com.fachinis.mc.plugins.singletons.PluginConfigurationSingleton;
 
 import net.kyori.adventure.text.Component;
@@ -17,9 +14,7 @@ class Main extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        InjectorService.getInstance().registerMultipleComponents(List.of(
-            new AuthService(this)
-        ));
+        AuthService.getInstance().initialize(this);
     }
 
     @Override

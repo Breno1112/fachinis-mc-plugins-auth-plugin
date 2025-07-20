@@ -3,7 +3,6 @@ package com.fachinis.mc.plugins.commands;
 import org.bukkit.entity.Player;
 
 import com.fachinis.mc.plugins.services.AuthService;
-import com.fachinis.mc.plugins.services.InjectorService;
 import com.fachinis.mc.plugins.singletons.PluginConfigurationSingleton;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -19,8 +18,6 @@ public class RegisterCommand implements PluginCommandInterface {
 
 
     public RegisterCommand() {}
-
-    private AuthService authService;
 
     public LiteralCommandNode<CommandSourceStack> buildCommand() {
         return Commands
@@ -51,7 +48,6 @@ public class RegisterCommand implements PluginCommandInterface {
     }
 
     private int runCommand(CommandContext<CommandSourceStack> commandContext) {
-        reloadAuthService();
         if ((commandContext.getSource().getExecutor() instanceof Player) == false) {
             return Command.SINGLE_SUCCESS;
         }
@@ -60,13 +56,7 @@ public class RegisterCommand implements PluginCommandInterface {
         final String email = StringArgumentType.getString(commandContext, "email");
         final String password = StringArgumentType.getString(commandContext, "password");
         player.sendMessage(Component.text("Signing you up...", NamedTextColor.GREEN));
-        authService.doRegistration(player, email, password);
+        AuthService.getInstance().doRegistration(player, email, password);
         return Command.SINGLE_SUCCESS;
-    }
-
-    private void reloadAuthService() {
-        if (authService == null) {
-            this.authService = InjectorService.getInstance().inject(AuthService.class);
-        }
     }
 }
